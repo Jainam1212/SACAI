@@ -18,7 +18,7 @@ mongoose
   .then(() => console.log("✅ Connected to MongoDB Atlas"))
   .catch((err) => {
     console.error("❌ MongoDB connection error:", err);
-    process.exit(1); // stop the app if connection fails
+    process.exit(1);
   });
 
 // Define a router
@@ -29,24 +29,45 @@ const appRouter = t.router({
       return { message: `Hello, ${input.name}!` };
     }),
     register: t.procedure
-    .input(z.object({ email: z.string().email(), password: z.string().min(6) }))
+    .input(z.object({ email: z.string().email(), password: z.string().min(6),role: z.string() }))
     .mutation(async ({ input }) => {
-      const hashedPassword = await bcrypt.hash(input.password, 10);
-      const user = new User({ email: input.email, password: hashedPassword });
-      await user.save();
-      return { success: true };
+      console.log('Register procedure called with input:', input);
+      try {
+        const existingUser = await User.findOne({ email: input.email });
+        if (existingUser) {
+          console.log('User already exists:', input.email);
+          throw new Error('Email already registered');
+        }
+        const hashedPassword = await bcrypt.hash(input.password, 10);
+        console.log('Hashed password for:', input.email);
+        const user = new User({ email: input.email, password: hashedPassword, role:input.role });
+        await user.save();
+        console.log('User saved successfully:', input.email);
+        return { success: true };
+      } catch (error) {
+        console.error('Error in register procedure:', error);
+        throw error;
+      }
     }),
-
-  login: t.procedure
+    login: t.procedure
     .input(z.object({ email: z.string().email(), password: z.string() }))
     .mutation(async ({ input }) => {
-      const user = await User.findOne({ email: input.email });
-      if (!user) throw new Error("User not found");
+      console.log('input reached login', input);
+      try {
+        const user = await User.findOne({ email: input.email });
+        if (!user) {
+          return { success: false, message: "User not found" };
+        }
 
-      const isValid = await bcrypt.compare(input.password, user.password);
-      if (!isValid) throw new Error("Invalid password");
-
-      return { success: true, message: "Login successful" };
+        const isValid = await bcrypt.compare(input.password, user.password);
+        if (!isValid) {
+          return { success: false, message: "Invalid password",userId:'' };
+        }
+        return { success: true, message: "Login successful", userId: input.email };
+      } catch (error) {
+        console.error("Login error:", error);
+        return { success: false, message: "Login failed due to server error", userId:'' };
+      }
     }),
 });
 

@@ -1,23 +1,37 @@
-import { useEffect } from "react";
-import { trpc } from "./utils/trpc";
+import './App.css';
+import { HomePage } from './components/Home';
+import { LoginPage } from './components/Login';
+import { Navbar } from './components/Navbar';
+import { Signup } from './components/Signup';
+import './index.css';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+
+function AppContent() {
+  const location = useLocation();
+
+  // Define all routes where Navbar should be hidden
+  const hideNavbarRoutes = ['/sacai/login','/sacai/signup'];
+  const hideNavbar = hideNavbarRoutes.includes(location.pathname);
+
+  return (
+    <>
+      {!hideNavbar && <Navbar />}
+      <Routes>
+        <Route path="/" element={<Navigate to="/sacai" />} />
+        <Route path="/sacai" element={<HomePage />} />
+        <Route path="/sacai/login" element={<LoginPage />} />
+        <Route path="/sacai/signup" element={<Signup />} />
+      </Routes>
+    </>
+  );
+}
 
 function App() {
-  const mutation = trpc.register.useMutation();
-
-  mutation.mutate({
-    email: 'tesst@example.com',
-    password: 'mypassword123',
-  });
-
-  const helloMutation = trpc.hello.useMutation();
-  useEffect(() => {
-    helloMutation.mutate({ name: "Rohan" });
-  }, []);
-
-  if (helloMutation.isPending) return <p>Loading...</p>;
-  if (helloMutation.error) return <p>Error: {helloMutation.error.message}</p>;
-
-  return <h1>{helloMutation.data?.message}</h1>;
+  return (
+    <Router>
+      <AppContent />
+    </Router>
+  );
 }
 
 export default App;
