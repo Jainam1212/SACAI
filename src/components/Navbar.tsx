@@ -11,8 +11,8 @@ export const Navbar = () => {
     <div className="sticky top-0 h-fit p-4 flex flex-row justify-between items-center bg-white">
       <img src={logo} alt="logo" className="w-24" />
       <ul>
-        <li>ksdj</li>
-        <li>sjkd</li>
+        <li>nav1</li>
+        <li>nav2</li>
       </ul>
       <div>
         <button className="bg-slate-50 pl-4 pr-4 pt-2 pb-2 border rounded-3xl border-slate-300 hover:bg-slate-200" onClick={handleLogin}>
