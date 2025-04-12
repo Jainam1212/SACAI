@@ -5,8 +5,9 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { z } from "zod";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import { User } from "./models/user.ts"
+import { User } from "./models/user.ts";
 import bcrypt from "bcrypt";
+import { Server } from "socket.io";  // Correct import for ES Modules
 
 dotenv.config();
 
@@ -28,8 +29,9 @@ const appRouter = t.router({
     .mutation(({ input }) => {
       return { message: `Hello, ${input.name}!` };
     }),
-    register: t.procedure
-    .input(z.object({ email: z.string().email(), password: z.string().min(6),role: z.string() }))
+
+  register: t.procedure
+    .input(z.object({ email: z.string().email(), password: z.string().min(6), role: z.string() }))
     .mutation(async ({ input }) => {
       console.log('Register procedure called with input:', input);
       try {
@@ -40,7 +42,7 @@ const appRouter = t.router({
         }
         const hashedPassword = await bcrypt.hash(input.password, 10);
         console.log('Hashed password for:', input.email);
-        const user = new User({ email: input.email, password: hashedPassword, role:input.role });
+        const user = new User({ email: input.email, password: hashedPassword, role: input.role });
         await user.save();
         console.log('User saved successfully:', input.email);
         return { success: true };
@@ -49,7 +51,8 @@ const appRouter = t.router({
         throw error;
       }
     }),
-    login: t.procedure
+
+  login: t.procedure
     .input(z.object({ email: z.string().email(), password: z.string() }))
     .mutation(async ({ input }) => {
       console.log('input reached login', input);
@@ -61,12 +64,12 @@ const appRouter = t.router({
 
         const isValid = await bcrypt.compare(input.password, user.password);
         if (!isValid) {
-          return { success: false, message: "Invalid password",userId:'' };
+          return { success: false, message: "Invalid password", userId: '' };
         }
         return { success: true, message: "Login successful", userId: input.email };
       } catch (error) {
         console.error("Login error:", error);
-        return { success: false, message: "Login failed due to server error", userId:'' };
+        return { success: false, message: "Login failed due to server error", userId: '' };
       }
     }),
 });
@@ -81,7 +84,32 @@ app.use(express.json());
 // Attach tRPC to Express
 app.use("/trpc", createExpressMiddleware({ router: appRouter }));
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+// Socket.io setup - integrate into app.listen
+const io = new Server({
+  cors: {
+    origin: "*",  // Allow all origins or restrict to specific ones
+    methods: ["GET", "POST"]
+  }
+});
+
+// Socket.io event listeners
+io.on("connection", (socket) => {
+  console.log("A user connected");
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected");
+  });
+
+  // Example of receiving a message
+  socket.on("send_message", (message) => {
+    console.log("Received message:", message);
+    io.emit("receive_message", message); // Broadcast the message to all clients
+  });
+});
+
+// Start the server and listen on the desired port
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 5173; // Ensure PORT is a number
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on http://0.0.0.0:${PORT}`);
+  io.listen(PORT);  // Make sure socket.io listens on the same port as the Express app
 });

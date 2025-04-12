@@ -8,7 +8,7 @@ export const Navbar = () => {
     }
 
   return (
-    <div className="sticky top-0 w-[100vw] h-fit p-4 flex flex-row justify-between items-center">
+    <div className="sticky top-0 h-fit p-4 flex flex-row justify-between items-center bg-white">
       <img src={logo} alt="logo" className="w-24" />
       <ul>
         <li>ksdj</li>
