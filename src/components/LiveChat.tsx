@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:4000"); // Change to your server URL if different
+// Change this to the URL of your backend server
+const socket = io("http://localhost:4000");
 
 const LiveChat = () => {
   const [message, setMessage] = useState("");

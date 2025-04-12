@@ -1,71 +1,65 @@
-import { useEffect, useRef, useState } from "react";
-import AgoraRTC, { IAgoraRTCClient } from "agora-rtc-sdk-ng";
+import { useEffect, useState, useRef } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
+import { JitsiMeeting } from "@jitsi/react-sdk";
 
-interface Props {
-  roomId: string;
-}
-
-const APP_ID = "a7a0a22625804c57a63d4e1ccd739da2";
-const TOKEN = null;
-const VideoRoom: React.FC<Props> = ({ roomId }) => {
-  const [joined, setJoined] = useState(false);
-  const clientRef = useRef<IAgoraRTCClient | null>(null);
-  const localVideoRef = useRef<HTMLDivElement | null>(null);
-  const localTracksRef = useRef<any[]>([]);
+export const VideoRoom = () => {
+  const { roomName } = useParams<{ roomName: string }>();
+  const [searchParams] = useSearchParams();
+  const [countdown, setCountdown] = useState<string | null>(null);
+  const timerMinutes = parseInt(searchParams.get("timer") || "0");
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const joinRoom = async () => {
-      console.log("🔄 Creating Agora client...");
-      const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-      clientRef.current = client;
-
-      try {
-        console.log("🚪 Joining channel...");
-        const uid = await client.join(APP_ID, roomId, TOKEN || null, null);
-        console.log("✅ Joined channel with UID:", uid);
-
-        const [audioTrack, videoTrack] =
-          await AgoraRTC.createMicrophoneAndCameraTracks();
-        console.log("🎙️ Audio and video tracks created");
-
-        localTracksRef.current = [audioTrack, videoTrack];
-
-        if (localVideoRef.current) {
-          const localContainer = document.createElement("div");
-          localContainer.id = `local-${uid}`;
-          localContainer.style.width = "400px";
-          localContainer.style.height = "300px";
-          localVideoRef.current.appendChild(localContainer);
-          console.log("📦 Appending video container");
-
-          videoTrack.play(localContainer);
+    if (timerMinutes > 0) {
+      const end = Date.now() + timerMinutes * 60 * 1000;
+      intervalRef.current = setInterval(() => {
+        const diff = end - Date.now();
+        if (diff <= 0) {
+          setCountdown("Time's up!");
+          if (intervalRef.current) clearInterval(intervalRef.current);
+        } else {
+          const mins = Math.floor(diff / 60000);
+          const secs = Math.floor((diff % 60000) / 1000);
+          setCountdown(`${mins}m ${secs}s`);
         }
-
-        await client.publish([audioTrack, videoTrack]);
-        console.log("📡 Published tracks");
-        setJoined(true);
-      } catch (err) {
-        console.error("❌ Failed to join room:", err);
-      }
-    };
-
-    joinRoom();
+      }, 1000);
+    }
 
     return () => {
-      const cleanup = async () => {
-        localTracksRef.current.forEach((track) => track.close());
-        await clientRef.current?.leave();
-      };
-      cleanup();
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [roomId]);
+  }, [timerMinutes]);
 
   return (
-    <div>
-      <h3>{joined ? "You have joined the call" : "Joining..."}</h3>
-      <div ref={localVideoRef} />
+    <div className="p-4 flex flex-col gap-4 closingJisti">
+      <h2 className="text-xl font-bold">
+        Topic: {roomName?.replace(/-/g, " ")}
+      </h2>
+      {timerMinutes > 0 && (
+        <p className="text-lg text-red-600 font-semibold">Timer: {countdown}</p>
+      )}
+      <div className="w-full">
+        <JitsiMeeting
+          domain="meet.jit.si"
+          roomName={roomName || "default-room"}
+          configOverwrite={{
+            startWithAudioMuted: false,
+            startWithVideoMuted: false,
+            disableDeepLinking: true,
+            disableThirdPartyRequests: true,
+            prejoinPageEnabled: false,
+            enableWelcomePage: false,
+            disableModeratorIndicator: true,
+            enableInsecureRoomNameWarning: true,
+            enableNoisyMicDetection: true,
+            enableClosePage: true,
+          }}
+          getIFrameRef={(iframeRef) => {
+            iframeRef.style.height = "600px";
+            iframeRef.style.width = "100%";
+          }}
+        />
+      </div>
     </div>
   );
 };
-
-export default VideoRoom;
