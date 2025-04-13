@@ -1,0 +1,179 @@
+/* General */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Animated Background */
+.animated-background {
+    background: linear-gradient(45deg, #d1e0ff, #f0d4ff, #d4f0ff, #ffd4e0);
+    background-size: 400%;
+    animation: colorShift 20s ease infinite;
+}
+
+@keyframes colorShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Login Page */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.login-container h1 {
+    color: white;
+    margin-bottom: 20px;
+}
+
+#login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#login-form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#login-form button {
+    padding: 10px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#login-form button:hover {
+    background: #764ba2;
+}
+
+/* Bubble Page */
+#container {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* Load More Button */
+#load-more {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 16px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    z-index: 999;
+}
+
+#load-more:hover {
+    background: #764ba2;
+}
+
+/* Popup for Small Bubbles */
+.popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+.popup-content {
+    background: white;
+    margin: 8% auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 700px; /* Increased */
+    height: 500px; /* Increased */
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.popup-close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+}
+
+#small-bubbles-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* Modal for Company Details */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1001;
+}
+
+.modal-content {
+    background: white;
+    margin: 10% auto;
+    padding: 15px;
+    width: 70%;
+    max-width: 500px;
+    border-radius: 8px;
+    position: relative;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.modal-close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#company-details {
+    font-size: 14px;
+}
+
+#company-details h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+#company-details ul {
+    list-style: disc;
+    margin-left: 15px;
+}
