@@ -6,6 +6,7 @@ import './index.css';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { VideoRoom } from './components/VideoRoom';
 import { HomePage } from './components/HomePage';
+import StudentMeeting from './components/StudentPage';
 
 function AppContent() {
   const location = useLocation();
@@ -18,11 +19,12 @@ function AppContent() {
     <>
       {!hideNavbar && <Navbar />}
       <Routes>
-        <Route path="/" element={<Navigate to="/sacai" />} />
+        <Route path="/" element={<Navigate to="/sacai/login" />} />
         <Route path="/sacai" element={<HomePage />} />
         <Route path="/sacai/login" element={<LoginPage />} />
         <Route path="/sacai/signup" element={<Signup />} />
         <Route path="/room/:roomName" element={<VideoRoom />} />
+        <Route path="/sacai/student" element={<StudentMeeting />} />
       </Routes>
     </>
   );

@@ -15,7 +15,11 @@ export const LoginPage = () => {
       if (result.success) {        
         console.log('✅', result.message);
         document.cookie = `username=${result.userId}`
-        navigate('/sacai')
+        if (result.designation === "participant") {
+          navigate("/sacai/student");
+        } else {
+          navigate("/sacai");
+        }
       } else {
         console.log('❌ Login failed:', result.message);
         setServerError(result.message);
