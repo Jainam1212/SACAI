@@ -1,36 +1,95 @@
-# SACAI
-### SkillBridge and CarrierPath AI
+# SACAI - Smart AI Career Advisor & SpeakSpace GD/Interview Builder
 
-Our project donot only target to provide an efficient real-time collaborative platform designed for student and job seekers but also add various functionalities from Intelligent Virtual Career Advisor.
-SACAI (SkillBridge and CarrierPath AI) serves as the Career Advisor that evaluates skills, aligns users with the best career trajectories based on market analytics, and offers assistance with resumes and interviews. SpeakSpace enhances this by providing real-time group discussions and role-play interviews, delivering immediate feedback on communication skills and logical reasoning. When combined, they create a cohesive environment for career development and skill mastery, enabling users to succeed in competitive job markets.
+An AI-powered web platform designed to guide users in their career journey and enhance their communication skills through simulated interview and group discussion sessions.
+
+---
+
+## Project Modules
+
+### 1. SpeakSpace – GD & Interview Skill Builder
+A real-time collaborative environment for students & job seekers to practice:
+- Group Discussions (GD)
+- Interview Skills
+- Role-based Login System:
+  - Moderator
+  - Participant
+  - Evaluator
+- Live Chat & Video Conferencing using Jitsi
+- Post-session Feedback & Ratings
+- Analytics Dashboard for Performance Tracking
+
+---
 
 
-#How to start our project: -
-```1. npm i within daiict2025 dir
-2. npm run dev
-3. npm run server
+### 2. Intelligent Virtual Career Advisor
+AI-driven career guidance platform that:
+- Analyzes User Skills
+- Recommends Personalized Career Paths
+- Provides Resume & Interview Tips
+- Performs Market & Job Trend Analysis
+- Suggests Networking Opportunities
+
+---
+
+
+## Tech Stack
+
+| Technology    | Purpose                          |
+|---------------|----------------------------------|
+| React.js      | Frontend Development             |
+| TypeScript    | Type Safety & Code Structure     |
+| Node.js       | Backend API                     |
+| MongoDB Atlas | Cloud Database                  |
+| Jitsi Meet    | Real-time Video Conferencing    |
+| Tailwind CSS  | Styling Framework               |
+| Vite          | Frontend Build Tool             |
+
+---
+
+
+---
+
+## Setup Instructions
+
+### Prerequisites
+- Node.js v16+
+- MongoDB Atlas Account
+- Jitsi API (Free Plan Available)
+
+---
+
+### Installation
+
+1. Clone the Repository:
+```bash
+git clone https://github.com/your-username/SACAI.git
+cd SACAI
+
+2. Install Dependencies:
+npm install
+
+3. Configure Environment Variables: Create .env file in root:
+
+VITE_MONGODB_URI=your-mongodb-atlas-uri
+VITE_JITSI_DOMAIN=meet.jit.si
+VITE_API_URL=your-backend-url
+
+
+Run the Project:
+npm run dev
 ```
+## Note:
+ 
+ This project uses MongoDB Atlas with IP Whitelisting enabled.
 
-### Note
+ If you're trying to run this project locally, you will need to:
+ 
+ 1. Add your current IP address to the MongoDB Atlas Network Access whitelist.
+ 2. Alternatively, you can allow access from all IPs temporarily (Not recommended for production):
+ 
+ In MongoDB Atlas Dashboard:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+ Network Access -> Add IP Address -> 0.0.0.0/0
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+ 
+ 3. Update the `VITE_MONGODB_URI` in `.env` file with your MongoDB Connection String.
